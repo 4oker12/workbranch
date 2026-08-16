@@ -1,0 +1,25 @@
+# Generated test reports
+tests/last_report.json
+tests/last_report.md
+
+# Runtime exports / traces
+*.log
+*.trace
+*trace*.json
+simnet-workbench-login_*.json
+
+# Packaged builds / local archives
+*.zip
+*.crx
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python / Node caches
+__pycache__/
+*.py[cod]
+node_modules/
