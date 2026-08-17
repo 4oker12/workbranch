@@ -98,7 +98,9 @@
 
   function ensureStyle() {
     if (!state.shadow || state.shadow.getElementById(STYLE_ID)) return;
-    state.shadow.insertAdjacentHTML('beforeend', styles());
+    const template = document.createElement('template');
+    template.innerHTML = styles();
+    state.shadow.appendChild(template.content.cloneNode(true));
   }
 
   function coverageClass(status) {
