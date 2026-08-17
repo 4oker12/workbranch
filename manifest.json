@@ -54,6 +54,8 @@
         "src/graph/graph-studio.js",
         "src/graph/conversation/conversation-content.js",
         "src/graph/conversation/conversation-runtime.js",
+        "src/graph/conversation/operator-handbook-layout-fix.js",
+        "src/graph/conversation/operator-handbook-question-help.js",
         "src/graph/conversation/conversation-mode-bridge.js",
         "src/ui/rail.js",
         "src/audit/launcher.js",
