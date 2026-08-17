@@ -72,7 +72,10 @@ for (const token of [
   'Это не диагностический граф',
   'removeEventListener',
   "document.createElement('template')",
-  'state.shadow.appendChild'
+  'state.shadow.appendChild',
+  '.module.operator-guide-runtime.open{display:block!important;grid-template-rows:none!important}',
+  "state.panel.classList.add('operator-guide-runtime')",
+  "state.panel?.classList.remove('guide-expanded', 'operator-guide-runtime')"
 ]) assert.ok(runtimeSource.includes(token), `missing operator-guide contract token: ${token}`);
 
 for (const forbidden of [
