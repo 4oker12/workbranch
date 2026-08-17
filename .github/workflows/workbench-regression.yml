@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev/workbench-next
+      - test/conversation-ux-v2
   workflow_dispatch:
 
 permissions:
