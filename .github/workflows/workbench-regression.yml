@@ -1,0 +1,58 @@
+name: Workbench Regression
+
+on:
+  push:
+    branches:
+      - dev/workbench-next
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run full regression suite
+        run: python tests/regression_tests.py
+
+      - name: Production syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find src -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
+
+      - name: Assert no setInterval in production src
+        shell: bash
+        run: |
+          if grep -R -n --include='*.js' --include='*.mjs' 'setInterval' src; then
+            echo 'setInterval found in production src'
+            exit 1
+          fi
+          echo 'setInterval count: 0'
+
+      - name: Upload regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workbench-regression-report
+          path: |
+            tests/last_report.json
+            tests/last_report.md
+          if-no-files-found: ignore
