@@ -30,6 +30,9 @@ jobs:
       - name: Run full regression suite
         run: python tests/regression_tests.py
 
+      - name: Run conversation graph contract tests
+        run: node tests/conversation_graph_unit_test.mjs
+
       - name: Production syntax check
         shell: bash
         run: |
