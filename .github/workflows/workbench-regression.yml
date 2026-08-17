@@ -34,6 +34,9 @@ jobs:
       - name: Run conversation graph contract tests
         run: node tests/conversation_graph_unit_test.mjs
 
+      - name: Run handbook layout contract test
+        run: node tests/operator_handbook_layout_contract_test.mjs
+
       - name: Production syntax check
         shell: bash
         run: |
