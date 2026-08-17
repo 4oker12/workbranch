@@ -8,6 +8,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 const contentSource = fs.readFileSync(path.join(root, 'src/graph/conversation/conversation-content.js'), 'utf8');
 const runtimeSource = fs.readFileSync(path.join(root, 'src/graph/conversation/conversation-runtime.js'), 'utf8');
+const bridgeSource = fs.readFileSync(path.join(root, 'src/graph/conversation/conversation-mode-bridge.js'), 'utf8');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
 
 const WB = {};
@@ -58,9 +59,16 @@ const scripts = manifest.content_scripts[0].js;
 const studioIndex = scripts.indexOf('src/graph/graph-studio.js');
 const contentIndex = scripts.indexOf('src/graph/conversation/conversation-content.js');
 const runtimeIndex = scripts.indexOf('src/graph/conversation/conversation-runtime.js');
+const bridgeIndex = scripts.indexOf('src/graph/conversation/conversation-mode-bridge.js');
 const railIndex = scripts.indexOf('src/ui/rail.js');
-assert.ok(studioIndex >= 0 && studioIndex < contentIndex && contentIndex < runtimeIndex && runtimeIndex < railIndex,
-  'conversation presentation wraps the existing Graph API before Rail without replacing the loader/editor');
+assert.ok(
+  studioIndex >= 0
+  && studioIndex < contentIndex
+  && contentIndex < runtimeIndex
+  && runtimeIndex < bridgeIndex
+  && bridgeIndex < railIndex,
+  'conversation presentation wraps the existing Graph API before Rail without replacing the loader/editor'
+);
 
 for (const token of [
   "const HOST_ID = 'simnet-graph-studio-host'",
@@ -81,10 +89,18 @@ for (const token of [
   'Помощник оператора'
 ]) assert.ok(runtimeSource.includes(token), `missing runtime contract token: ${token}`);
 
+for (const token of [
+  "const HOST_ID = 'simnet-graph-studio-host'",
+  'data-action="runtime-open"',
+  "WB.graphStudio?.open?.({ mode: 'runtime' })",
+  "panel.addEventListener('click', onPanelClick, true)"
+]) assert.ok(bridgeSource.includes(token), `missing mode bridge contract token: ${token}`);
+
 assert.ok(!runtimeSource.includes('setInterval'), 'conversation runtime must not poll');
 assert.ok(!runtimeSource.includes('MutationObserver'), 'conversation runtime must not observe the CRM DOM');
 assert.ok(!runtimeSource.includes('chrome.storage.local.set'), 'answer clicks must not spam UI storage directly');
 assert.ok(!runtimeSource.includes("document.createElement('div')"), 'runtime must reuse the existing Graph Studio host');
 assert.ok(!runtimeSource.includes('TMC_') && !runtimeSource.includes('poll_current_binding'), 'conversation runtime must not own PON/TMC routing');
+assert.ok(!bridgeSource.includes('setInterval') && !bridgeSource.includes('MutationObserver'), 'mode bridge stays event-driven');
 
 console.log('conversation_graph_unit_test: PASS');
