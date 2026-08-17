@@ -1,0 +1,27 @@
+SIMNET Workbench v1.7.29.6 — Automatic Juniper Snapshot Hotfix
+
+A. АВТОЗАПУСК
+[ ] Открыть карточку абонента Billing и не переходить в Juniper (NEW).
+[ ] В LIVE сразу появляется «Считываю Juniper…», затем Online/Offline/Нет сессии.
+[ ] Нет обязательной паузы 15 секунд: результат публикуется сразу после ответа Billing.
+
+B. GUIDE
+[ ] Guide не предлагает «Сначала открой Juniper (NEW)».
+[ ] С карточки Billing следующий рабочий шаг — технические данные/обычный маршрут.
+[ ] Ручное открытие Juniper остаётся возможным, но не требуется для появления данных в LIVE.
+
+C. СОХРАНЕНИЕ
+[ ] Сразу после открытия карточки перейти в технические данные: поздний Juniper-ответ всё равно сохраняется в тот же Case.
+[ ] Перейти Billing → UserSide: Juniper-снимок остаётся в LIVE.
+[ ] Экспорт JSON содержит juniper.dataStatus=available и locator.sourceStatus.juniperPreview либо juniper.
+[ ] В сохранённом снимке method=billing-juniper-prefetch или billing-juniper-prefetch-askjun, а не только billing-juniper-page.
+
+D. ПОВТОРЫ И ОШИБКИ
+[ ] После готового снимка переходы по Billing не создают повторные Juniper GET.
+[ ] При loading моложе 20 секунд второй запрос не запускается.
+[ ] Если запрос завис/вкладка закрылась, следующая Billing-карточка восстанавливает чтение.
+[ ] SYNC и Disconnect автоматически не выполняются.
+
+E. РЕГРЕССИЯ
+[ ] OLT/ONU LIVE-снимок не стирается Juniper-ответом.
+[ ] Регистрация звонка, сохранение Case, G-COM/Huawei и очистка закрытых вкладок работают как в v1.7.29.5.

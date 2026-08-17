@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Обновление SIMNET Workbench</title>
+  <link rel="stylesheet" href="updater.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="mark">W</div>
+      <div>
+        <div class="eyebrow">SIMNET WORKBENCH</div>
+        <h1>Обновление</h1>
+        <p id="versionLine">Текущая версия: …</p>
+      </div>
+    </header>
+
+    <section class="card" id="folderCard">
+      <div class="row">
+        <div>
+          <h2>Рабочая папка</h2>
+          <p id="folderState">Проверяю привязку…</p>
+        </div>
+        <span class="state" id="folderBadge">…</span>
+      </div>
+      <button class="secondary" id="bindFolder">Привязать папку Workbench</button>
+      <p class="hint">Нужно один раз выбрать ту же папку, которую Chrome использует как «Load unpacked». После этого путь запоминается.</p>
+    </section>
+
+    <section class="card update-card">
+      <h2>Залить новую сборку</h2>
+      <p>Выбери ZIP, который я тебе отдаю. Updater проверит manifest, версию и структуру, сделает backup runtime-файлов и заменит файлы Workbench.</p>
+      <label class="check"><input type="checkbox" id="reloadTabs"> <span>После обновления перезагрузить открытые Billing / UserSide / PBX вкладки</span></label>
+      <input id="zipInput" type="file" accept=".zip,application/zip" hidden>
+      <button class="primary" id="updateButton" disabled>Выбрать ZIP и обновить</button>
+      <div class="progress" id="progress" hidden><div id="progressBar"></div></div>
+      <div class="message" id="message" aria-live="polite"></div>
+    </section>
+
+    <section class="card compact">
+      <h2>Что updater не делает</h2>
+      <p>Не удаляет старые файлы автоматически, не меняет Case/диагностику и не принимает обновление с более старой версией. Backup хранится в <code>.simnet-wb-backup</code> внутри рабочей папки.</p>
+    </section>
+  </main>
+  <script type="module" src="updater.js"></script>
+</body>
+</html>

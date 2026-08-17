@@ -1,0 +1,96 @@
+{
+  "manifest_version": 3,
+  "name": "SIMNET Workbench",
+  "version": "1.7.29.50",
+  "description": "Case-safe Billing/UserSide workbench with strict PBX call registration guards and PON diagnostics.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://userside.simnet.kiev.ua/*",
+    "https://admin.simnet.kiev.ua/*",
+    "https://admin.looknet.kiev.ua/*",
+    "https://pbx.simnet.kiev.ua/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://userside.simnet.kiev.ua/*",
+        "https://admin.simnet.kiev.ua/*",
+        "https://admin.looknet.kiev.ua/*"
+      ],
+      "js": [
+        "src/content/namespace.js",
+        "src/core/event-bus.js",
+        "src/core/performance-monitor.js",
+        "src/core/observability.js",
+        "src/core/locator-signals.js",
+        "src/core/tmc-match.js",
+        "src/core/tmc-parser.js",
+        "src/core/juniper-session-parser.js",
+        "src/core/billing-navigation.js",
+        "src/core/context-engine.js",
+        "src/adapters/billing-adapter.js",
+        "src/adapters/userside-adapter.js",
+        "src/core/interaction-guards.js",
+        "src/core/store-client.js",
+        "src/core/action-lifecycle.js",
+        "src/core/evidence-navigator.js",
+        "src/core/juniper-prefetch.js",
+        "src/core/operator-trace.js",
+        "src/core/handoff.js",
+        "src/core/locator-observer.js",
+        "src/ui/knowledge-base.js",
+        "src/ui/poll-terminal.js",
+        "src/ui/guide.js",
+        "src/ui/appeals-navigator.js",
+        "src/ui/call-registration.js",
+        "src/core/semantic-tree.js",
+        "src/graph/graph-loader.js",
+        "src/graph/graph-studio.js",
+        "src/ui/rail.js",
+        "src/audit/launcher.js",
+        "src/content/bootstrap.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://pbx.simnet.kiev.ua/*"
+      ],
+      "js": [
+        "src/pbx/pbx-observer.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "SIMNET Workbench",
+    "default_popup": "src/ui/popup.html"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/audit/audit.html",
+        "src/audit/audit.css",
+        "src/audit/audit.js",
+        "src/core/tmc-parser.js"
+      ],
+      "matches": [
+        "https://userside.simnet.kiev.ua/*",
+        "https://admin.simnet.kiev.ua/*",
+        "https://admin.looknet.kiev.ua/*"
+      ]
+    }
+  ]
+}

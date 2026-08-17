@@ -1,0 +1,11 @@
+SIMNET Workbench v1.7.29.11 — StoreClient workflow hotfix
+
+Проверить на живом Billing:
+1. Открыть абонента PON и дойти до состояния «Данные готовы для опроса ONU».
+2. В технических данных нажать «Перейти к опросу».
+3. В Console НЕ должно появляться `Request failed: undefined`.
+4. Должен сохраниться `workflow.ponAcquisition.pollRevealPending=true`, затем Billing должен перейти на карточку абонента.
+5. После загрузки карточки Workbench должен предложить/подсветить правильный раздел опроса EPON/GPON/GCOM/Huawei.
+6. Reload/уход в другой раздел не должен сбросить pending state до завершения/показа опроса.
+
+Автотесты: 207 PASS / 0 FAIL / 6 SKIP из 213.

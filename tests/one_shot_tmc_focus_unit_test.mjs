@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here = path.dirname(fileURLToPath(import.meta.url));
+const rail = fs.readFileSync(path.join(here, '..', 'src/ui/rail.js'), 'utf8');
+const guide = fs.readFileSync(path.join(here, '..', 'src/ui/guide.js'), 'utf8');
+const lifecycle = fs.readFileSync(path.join(here, '..', 'src/core/action-lifecycle.js'), 'utf8');
+
+assert.match(rail, /followOneShotRecommendation\(key, fallback\)[\s\S]*startGuidedLifecycle\(key/);
+assert.match(rail, /semanticTargetId: 'userside\.tmc'/);
+assert.match(rail, /destinationPageKind: 'userside_customer'/);
+assert.match(rail, /openTmcSourceDirect\(\)/);
+assert.match(rail, /openTmcSourceDirect\(\)[\s\S]*openUsersideForCase/);
+assert.match(rail, /Первый клик уже принят:[\s\S]*Второй клик не нужен/, 'active TMC one-shot must continue without a second CTA click');
+assert.match(rail, /Один клик запускает единую ActionSession/, 'Billing → TMC help must describe the one-click route');
+assert.match(guide, /continueActiveActionSession/);
+assert.match(guide, /userside\.tmc/);
+assert.match(lifecycle, /WAITING_TARGET/);
+assert.match(lifecycle, /targetTimeoutMs/);
+assert.doesNotMatch(rail, /oneShotFocusTarget/);
+assert.doesNotMatch(rail, /oneShotFocusNavigationKey !==/);
+console.log('one_shot_tmc_focus_unit_test: PASS');

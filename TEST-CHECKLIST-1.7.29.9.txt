@@ -1,0 +1,22 @@
+SIMNET Workbench v1.7.29.9 — Approved LIVE ONU Acquisition Flow
+
+A. LIVE / PON acquisition
+[ ] Before live poll, orange block says exactly: «Нужен живой опрос ONU».
+[ ] Orange block has no ?, no missing-field list, no navigation button.
+[ ] Before Juniper review, lower card requests Juniper verification.
+[ ] Native Juniper page review exposes session status, traffic and start/event time.
+[ ] After Juniper, lower card requests Billing technical data.
+[ ] If Billing fields are missing, lower card lists only missing OLT / Serial ONU / MAC ONU and points to TMC.
+[ ] TMC result does not close the orange ONU goal.
+[ ] After TMC, lower card returns operator to Billing technical data to fill/save.
+[ ] When data are sufficient, lower card names exact poll type (EPON/GPON/GCOM/Huawei).
+[ ] Only confirmed live poll removes the orange block.
+[ ] Confirmed result shows ONU status, learned MAC, link speed/duplex, important event/history summary.
+[ ] Main LIVE does not duplicate OLT IP or optical RX/TX as first-level facts.
+
+B. Regression
+[ ] Floating Call / Graph / LIVE / More dock remains intact.
+[ ] Case/context is unchanged by opening/closing LIVE.
+[ ] Billing/UserSide handoff works.
+[ ] Poll guard/correlation remains strict.
+[ ] Full regression suite PASS; pre-existing environment skips only if dependency is unavailable.

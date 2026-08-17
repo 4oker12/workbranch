@@ -1,0 +1,34 @@
+SIMNET Workbench v1.7.24 — Poll Recovery / Guided UX
+
+AUTO
+[ ] python3 tests/regression_tests.py: 0 FAIL
+[ ] correlation_hardening_unit_test.mjs: PASS
+[ ] poll_recovery_ux_unit_test.mjs: PASS
+[ ] all JavaScript syntax checks: PASS
+
+MANUAL SMOKE
+[ ] Billing subscriber: NEXT = Juniper (NEW)
+[ ] Juniper background preview fills LIVE data but Guide still requests visible review
+[ ] Juniper page review then continues to Technical data
+[ ] While NEXT = TMC, manual Huawei/GPON/Juniper detour does not replace NEXT
+[ ] Billing and UserSide tabs of one case keep separate contexts
+[ ] Triple click Ask OLT creates one request
+[ ] Ask OLT opens its native GET during unrelated background DOM changes
+[ ] Cancelled/no-navigation Poll unlocks within 12 seconds
+[ ] Pending older than 90 seconds permits an intentional retry
+[ ] FAILED/TIMEOUT permits an intentional retry
+[ ] Old Poll response cannot finish a newer attempt
+[ ] Switching case A → B does not copy A pollAttemptId into B events
+[ ] Juniper preview preserves Cyrillic CP1251 and its online/offline status
+[ ] Stale USERSIDE Guide target does not block native navigation
+[ ] FINISHED remains FINISHED after late Juniper/TMC/MAC evidence
+
+UX / LEARNING
+[ ] LIVE shows human context and stage labels instead of internal identifiers
+[ ] Active/failed live Poll is visible without opening JSON
+[ ] A new term gets one short «Простыми словами» explanation under the main action
+[ ] The explanation does not hide, replace or delay the operator's next action
+
+JOURNAL
+[ ] Important entries contain CORRELATION block
+[ ] verdict/reason and case/episode/route/document/request/attempt ids are visible in JSON

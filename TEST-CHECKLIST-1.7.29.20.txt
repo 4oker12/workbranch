@@ -1,0 +1,54 @@
+SIMNET Workbench v1.7.29.20 — manual acceptance
+
+A. Подробная запись действий
+[ ] Открыть абонента и НЕ включать режим «Подробная запись действий».
+[ ] Скроллить, наводить мышь, кликать обычные элементы CRM — operator_scroll/operator_hover/operator_click не должны добавляться в Case-журнал.
+[ ] При этом обычные navigation / route_guard / correlation / LIVE события Workbench продолжают фиксироваться.
+[ ] В Settings включить «Подробная запись действий» для текущего Case.
+[ ] После включения scroll/hover/click/change начинают фиксироваться.
+[ ] Выключить режим — подробные события сразу прекращаются.
+[ ] Перейти на другого абонента: режим не должен сам включиться для другого Case.
+
+B. PBX — строгая привязка
+[ ] Обновить/open pbx.simnet.kiev.ua/fop2/list.php.
+[ ] Для звонка с точным contract/IP «Закрепить за Case» работает как раньше.
+[ ] Нажатие «Закрепить за Case» само по себе НЕ создаёт регистрацию в UserSide.
+
+C. PBX — под ответственность оператора
+[ ] Выбрать phone-only / неоднозначный звонок: строка видна и выбирается.
+[ ] Обычное «Закрепить за Case» отказывает.
+[ ] Нажать «Принять под ответственность» — появляется отдельное предупреждение/confirm.
+[ ] Нажать Cancel — binding и POST не создаются.
+[ ] Повторить и подтвердить — появляется предупреждение, что binding ручной и автоматическая связь не подтверждена.
+[ ] После ручного binding штатная регистрация звонка доступна.
+[ ] Проверить Case-журнал: есть явная запись operator-override/«под ответственность оператора».
+[ ] Тот же callid в другом Case остаётся заблокирован.
+[ ] Registered/submitting/review_required callid нельзя переиспользовать.
+[ ] Двойной/параллельный Save не создаёт второй POST.
+
+D. PON / Ethernet boundary
+[ ] На PON абоненте точка подключения вида FoxGate ONU + LAN port 1 НЕ переводит Case в Ethernet.
+[ ] PON маршрут ONU -> OLT / штатный poll остаётся прежним.
+[ ] В экспорте PON LAN-порт находится под pon.onuLan*, а не network.access*.
+[ ] На настоящем Ethernet абоненте network.accessDevice/accessPort продолжают заполняться и Ethernet route работает.
+
+E. Poll state / LIVE
+[ ] После CONFIRMED poll: pending=false и status=resolved (не pending).
+[ ] LIVE отдельно показывает факт ответа OLT и состояние ONU.
+[ ] OFFLINE ONU не отображается как healthy/online service.
+[ ] При подтверждённой TMC identity LIVE показывает «ONU подтверждена».
+[ ] При отсутствии identity proof LIVE может показать «Привязка ONU не подтверждена», даже если OLT ответила.
+
+F. History
+[ ] В LIVE history нет `[object Object]` вместо события.
+[ ] Одинаковый OFFLINE-summary не повторяется дважды подряд.
+
+G. Обязательная регрессия прежних функций
+[ ] TMC missing-only auto-prefill v1.7.29.19 работает; введённые оператором значения не перезаписываются.
+[ ] Billing Save остаётся ручным.
+[ ] Data Audit открывается без unsafe-eval.
+[ ] SCAN stale/latest-wins продолжает отбрасывать старый результат.
+[ ] Guide не делает автоматических опасных кликов.
+[ ] PON штатный poll работает.
+[ ] Ethernet route работает.
+[ ] Call Registration native UserSide form/CSRF работает.

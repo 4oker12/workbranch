@@ -1,0 +1,42 @@
+SIMNET Workbench v1.7.21 — Juniper-first acceptance checklist
+
+A. Первый источник / обычный кейс
+[ ] 1. Открыть Billing карточку нового абонента.
+[ ] 2. Workbench первым показывает состояние «Juniper (NEW) · read-only / считываю».
+[ ] 3. Не переходя вручную в Juniper, дождаться информационного блока.
+[ ] 4. После чтения Juniper NEXT переходит к обычному маршруту (обычно Технические данные).
+[ ] 5. В журнале есть JUNIPER · online/offline/no_session/error и смысловой текст.
+
+B. Online-сессия
+[ ] 1. Проверить, что показываются IP/MAC, BRAS, session/source, start time, speed, last event, VLAN если они есть.
+[ ] 2. При ненулевой мгновенной скорости написано «есть обмен пакетами».
+[ ] 3. Текст не делает вывод о качестве Wi‑Fi/оптики только по online-сессии.
+
+C. Offline / Radius stale
+[ ] 1. На блоке «сесія є в Radius, але на BRAS не знайдена» состояние определяется как offline/stale.
+[ ] 2. Workbench поясняет, что это L3-факт, а не доказательство отсутствия ONU.
+[ ] 3. Диагностика не останавливается и идёт дальше.
+
+D. Нет данных / ошибка
+[ ] 1. Если a=252 пустой, допускается максимум один read-only «Запит Juniper» (act=askjun).
+[ ] 2. При сетевой/парсерной ошибке Juniper маршрут не зависает.
+[ ] 3. После error/no_session NEXT всё равно продолжает Billing technical.
+
+E. Безопасность Juniper
+[ ] 1. Workbench сам НЕ вызывает act=coasync.
+[ ] 2. Workbench сам НЕ вызывает act=coadisconnect.
+[ ] 3. Workbench не кликает SYNC/Disconnect.
+[ ] 4. Ручной поздний заход оператора в Juniper после ухода маршрута считается supporting/off-route и не сбивает NEXT.
+
+F. Старые Guard Rails
+[ ] 1. Двойной/тройной «Запрос OLT» не создаёт несколько poll операций.
+[ ] 2. Неправильная PON-вкладка не завершает маршрут.
+[ ] 3. click != poll complete.
+[ ] 4. confirmed остаётся terminal даже после UserSide/Juniper/Back.
+[ ] 5. MutationObserver/перестройка DOM не засчитывает stale Guide click.
+
+G. Журнал
+[ ] 1. Старые form[name=id] больше не дают cssPath form#[object HTMLInputElement].
+[ ] 2. Juniper (NEW) определяется как a=252.
+[ ] 3. «Запит Juniper» определяется как a=252&act=askjun.
+[ ] 4. SYNC и Disconnect имеют отдельные семантические подписи, но Workbench их не запускает автоматически.

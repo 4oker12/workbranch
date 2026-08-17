@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here = path.dirname(fileURLToPath(import.meta.url));
+const source = fs.readFileSync(path.join(here, '..', 'src/graph/graph-studio.js'), 'utf8');
+assert.match(source, /function runtimeEvidenceTrail\(caseData\)[\s\S]*?WB\.evidenceNavigator\?\.trail\?\.\(caseData\)/);
+assert.match(source, /Пройденный технический путь/);
+assert.match(source, /renderRuntimeEvidenceTrail\(caseData\)/);
+assert.match(source, /function runtimeJuniperEvidence\(caseData\)/);
+assert.match(source, /Juniper · evidence node/);
+assert.match(source, /Оператор открывал/);
+assert.doesNotMatch(source, /liveProgress\s*=|guideProgress\s*=|graphEvidenceProgress\s*=/, 'Graph must project canonical Case evidence, not own a progress engine');
+console.log('graph_evidence_projection_unit_test: PASS');

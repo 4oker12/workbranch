@@ -1,0 +1,33 @@
+SIMNET Workbench v1.7.29.26 — Observability checklist
+
+AUTOMATED
+[PASS] Full regression suite: 255 PASS / 0 FAIL / 6 existing SKIP (261 total)
+[PASS] Persistent diagnostics capped at 200 entries
+[PASS] Persistent diagnostics capped at ~420 KB
+[PASS] 10,000 duplicate errors dedupe into one record
+[PASS] Repeat counter / unread semantics
+[PASS] DEBUG/success flow does not persist normal journal noise
+[PASS] Active operations capped at 80
+[PASS] Emergency runtime fallback capped at 24
+[PASS] Circular/malformed/large details safely serialized and clipped
+[PASS] Stack clipped
+[PASS] Secret fields and URL auth parameters redacted
+[PASS] Clear / mark-read behavior
+[PASS] Runtime-message failure fallback path
+[PASS] No new manifest permission
+[PASS] No new MutationObserver
+[PASS] No setInterval / diagnostics heartbeat
+
+MANUAL SMOKE AFTER INSTALL
+[ ] Open Billing and UserSide: no unexpected badge / no console flood
+[ ] More -> Ошибки opens and stays lightweight
+[ ] Mark read clears unread badge but keeps history
+[ ] Clear removes diagnostics history
+[ ] Export downloads compact redacted JSON
+[ ] Trigger a safe known failure if available: warning/error appears in Diagnostics
+[ ] Service Worker can become inactive with Inspect closed
+[ ] Reload Billing/UserSide after extension reload; Case recovery remains intact
+[ ] TMC -> Billing writeback success does not create a false ERROR
+[ ] Failed TMC post-condition creates TMC_WRITEBACK_* diagnostic
+[ ] OLT poll failure/timeout is recorded once and repeat events dedupe
+[ ] PBX/call flow normal operation does not create console/error noise

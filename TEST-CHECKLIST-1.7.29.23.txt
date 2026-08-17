@@ -1,0 +1,15 @@
+SIMNET Workbench v1.7.29.23 — manual acceptance
+
+[ ] Initial manual install/reload shows v1.7.29.23 in popup.
+[ ] Popup has «Обновить Workbench».
+[ ] Updater page opens in a normal extension tab.
+[ ] First bind rejects a folder without SIMNET Workbench manifest.json.
+[ ] Correct working folder binds and is remembered after closing/reopening updater.
+[ ] Selecting same-version ZIP is rejected.
+[ ] Selecting older ZIP is rejected.
+[ ] Non-Workbench ZIP is rejected before any write.
+[ ] Valid newer ZIP creates .simnet-wb-backup and updates files.
+[ ] manifest.json is updated and extension reloads to the new version.
+[ ] With reload checkbox OFF, open Billing/UserSide tabs are not reloaded.
+[ ] With reload checkbox ON, matching work tabs reload after extension update.
+[ ] Existing LIVE/Guide/Call/Graph behavior remains unchanged.

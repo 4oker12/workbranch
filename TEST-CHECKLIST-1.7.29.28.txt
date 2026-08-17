@@ -1,0 +1,65 @@
+SIMNET Workbench v1.7.29.28 — manual acceptance checklist
+
+1. Начальная карточка
+[ ] LIVE: компактный Договор + Online/Offline + login/context + traffic/time
+[ ] нет списка "Техданные — не выполнено / ТМЦ — не выполнено / ONU не опрошено"
+[ ] максимум одна следующая CTA
+
+2. Свободный маршрут
+[ ] проигнорировать CTA "Техданные"
+[ ] вручную открыть ТМЦ
+[ ] LIVE добавляет только "✓ ТМЦ ... →"
+[ ] "✓ Техданные" не появляется автоматически
+
+3. Direct poll
+[ ] открыть poll своим путём
+[ ] выполнить Запрос OLT
+[ ] ONLINE -> history "✓ Опрос ONU ... →"
+[ ] NOT_FOUND -> history "✓ Опрос ONU · ONU не найдена →"
+[ ] TIMEOUT -> history "✓ Опрос ONU · timeout →"
+[ ] Technical/TMC не дорисовываются без реального посещения
+
+4. One-shot CTA
+[ ] CTA "Перейти в техданные" ведёт и подсвечивает target
+[ ] после достижения Technical эта большая CTA больше не возвращается
+[ ] повторный переход возможен стрелкой у "✓ Техданные"
+
+5. TMC one-shot cross-page
+[ ] из Billing нажать текущую TMC recommendation
+[ ] Workbench открывает UserSide текущего Case
+[ ] после загрузки подсвечивается реальный блок ТМЦ/Serial/MAC/OLT
+[ ] routine rerender не открывает UserSide повторно
+[ ] backdrop/ESC/target click закрывают focus
+
+6. Focus lifetime
+[ ] после появления Focus подождать несколько секунд
+[ ] store/context/Juniper update не закрывает его сам
+[ ] LIVE не разворачивается сама через 200–700 мс
+[ ] click свободной затемнённой области закрывает Focus
+[ ] Esc закрывает Focus
+
+7. Replay
+[ ] нажать → у completed milestone
+[ ] открыть правильный native CRM-раздел
+[ ] показать Focus один раз
+[ ] НЕ создавать большую CTA повторно
+
+8. Ambient glow
+[ ] самостоятельно открыть уже пройденные Technical/TMC/OLT страницы
+[ ] без replay нет постоянной автоматической подсветки старых evidence
+
+9. Graph
+[ ] открыть Graph
+[ ] "Пройденный технический путь" совпадает с LIVE history
+[ ] порядок/результаты не расходятся с Case evidence
+
+10. Case isolation
+[ ] открыть другого абонента
+[ ] history первого Case не переходит во второй
+[ ] вернуться к первому — его evidence сохранён
+
+11. Regression-sensitive flows
+[ ] TMC→Billing writeback всё ещё missing-only / exact existing option / no autosave
+[ ] Ask OLT остаётся штатным Billing действием
+[ ] Call registration работает как до v28
+[ ] Diagnostics / emergency export работают

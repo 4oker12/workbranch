@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SIMNET Semantic Studio</title>
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <div class="brand-title">Semantic Studio</div>
+          <div class="brand-sub">SIMNET Workbench · смысловое проектирование</div>
+        </div>
+      </div>
+      <div class="top-status">
+        <span class="status-dot"></span>
+        <span id="saveStatus">Загрузка…</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="undoBtn" type="button">↶</button>
+        <button class="btn ghost" id="redoBtn" type="button">↷</button>
+        <button class="btn ghost" id="exportBtn" type="button">Экспорт</button>
+        <label class="btn ghost file-btn">Импорт<input id="importInput" type="file" accept="application/json"></label>
+        <button class="btn primary" id="confirmBtn" type="button">Подтвердить изменения</button>
+      </div>
+    </header>
+
+    <section class="safety-banner">
+      <b>Отдельная проектная студия.</b>
+      <span>Она не меняет текущую диагностику Billing/UserSide. Здесь можно строить, переписывать и обсуждать смысловые маршруты; подтверждённую карту потом можно переносить в runtime отдельным изменением проекта.</span>
+    </section>
+
+    <main class="workspace">
+      <aside class="sidebar left-sidebar">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Темы</span>
+            <h2>Смысловые контексты</h2>
+          </div>
+          <button class="icon-btn" id="addContextBtn" type="button" title="Новый контекст">＋</button>
+        </div>
+        <div id="contextList" class="context-list"></div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="section-head compact">
+          <div>
+            <span class="eyebrow">Быстрый набросок</span>
+            <h2>A → B → C</h2>
+          </div>
+        </div>
+        <textarea id="quickRouteInput" class="quick-route" rows="4" placeholder="Например: Техданные -> ТМЦ -> Save -> ONU"></textarea>
+        <button id="quickRouteBtn" class="btn secondary full" type="button">Разложить маршрут</button>
+        <p class="microcopy">Создаёт черновые смысловые узлы в выбранной теме. Потом можно перетаскивать, менять стрелки и типы.</p>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="section-head compact">
+          <div>
+            <span class="eyebrow">Идея / диалог</span>
+            <h2>Рабочие заметки</h2>
+          </div>
+        </div>
+        <textarea id="ideaInput" class="idea-input" rows="7" placeholder="Сюда можно вставлять идею из чата, писать условия, исключения, точку А и точку Б…"></textarea>
+        <button id="saveIdeaBtn" class="btn ghost full" type="button">Сохранить заметку</button>
+        <div id="ideaList" class="idea-list"></div>
+      </aside>
+
+      <section class="canvas-panel">
+        <div class="canvas-toolbar">
+          <div class="toolbar-group">
+            <button id="addNodeBtn" class="btn secondary" type="button">＋ Узел</button>
+            <button id="linkModeBtn" class="btn secondary" type="button">A → B</button>
+            <button id="fitBtn" class="btn ghost" type="button">Вместить</button>
+          </div>
+          <div class="toolbar-center">
+            <strong id="canvasTitle">Вся карта</strong>
+            <span id="canvasMeta">—</span>
+          </div>
+          <div class="toolbar-group zoom-controls">
+            <button id="zoomOutBtn" class="btn ghost" type="button">−</button>
+            <span id="zoomLabel">100%</span>
+            <button id="zoomInBtn" class="btn ghost" type="button">＋</button>
+          </div>
+        </div>
+
+        <div id="linkHint" class="link-hint hidden"></div>
+        <div id="canvasViewport" class="canvas-viewport">
+          <div class="canvas-grid"></div>
+          <div id="canvasWorld" class="canvas-world">
+            <svg id="edgeLayer" class="edge-layer" width="6000" height="4000" viewBox="0 0 6000 4000"></svg>
+            <div id="nodeLayer" class="node-layer"></div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span><i class="swatch context"></i>контекст</span>
+          <span><i class="swatch decision"></i>решение</span>
+          <span><i class="swatch operation"></i>операция</span>
+          <span><i class="swatch fact"></i>факт</span>
+          <span><i class="swatch gate"></i>граница</span>
+          <span><i class="swatch milestone"></i>веха</span>
+        </div>
+      </section>
+
+      <aside class="sidebar inspector-sidebar">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Inspector</span>
+            <h2 id="inspectorTitle">Выбери узел или стрелку</h2>
+          </div>
+        </div>
+        <div id="inspectorBody" class="inspector-body">
+          <div class="empty-state">Кликни по узлу или стрелке. Здесь можно менять смысл, тип, условия и направление связи.</div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="section-head compact">
+          <div>
+            <span class="eyebrow">Draft</span>
+            <h2>Что изменено</h2>
+          </div>
+        </div>
+        <div id="diffSummary" class="diff-summary"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <div class="modal-kicker">Точка A → точка B</div>
+      <h2 id="confirmTitle">Подтвердить смысловую версию?</h2>
+      <p>Перед подтверждением проверь краткое резюме. Подтверждение сохраняет новую версию только в Semantic Studio и не вмешивается в рабочую диагностику.</p>
+      <div id="confirmSummary" class="confirm-summary"></div>
+      <label class="field-label" for="versionNote">Комментарий к версии</label>
+      <textarea id="versionNote" rows="3" placeholder="Что изменили и зачем"></textarea>
+      <div class="modal-actions">
+        <button class="btn ghost" type="button" data-close-modal>Отмена</button>
+        <button class="btn primary" id="confirmApplyBtn" type="button">Подтвердить версию</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="../content/namespace.js"></script>
+  <script src="../core/semantic-tree.js"></script>
+  <script src="studio.js"></script>
+</body>
+</html>

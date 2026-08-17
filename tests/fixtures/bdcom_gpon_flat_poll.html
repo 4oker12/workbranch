@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head><title>BDCOM GPON flat terminal fixture</title></head>
+<body>
+  <table class="table0"><tbody><tr><td>
+    <font face="Lucida Console">[12:52:32 10-08-2026] ====== <b>OLT 192.0.2.70</b> ======= <br>
+      <br><b>show mac address-table interface GPON0/8:29</b> <u>(0 сек.)</u>
+      <br>Mac Address Table (Total 1)
+      <br>254 0200.0000.0001 DYNAMIC gpon0/8:29-1
+      <br><hr><b>show gpon active-onu interface GPON0/8 29</b> <u>(0 сек.)</u>
+      <br>Interface GPON0/8 has bound 1 active ONUs:
+      <br>GPON0/8:29 TEST:15A2D643 N/A 2026-08-10 12:21:01 0000d:00:31:30 1605.7
+      <br><hr><b>show gpon int GPON0/8:29 onu optical-transceiver-diagnosis</b> <u>(1 сек.)</u>
+      <br>gpon0/8:29 39.0 3.4 13.5 -16.8 2.3
+      <br><hr><b>show gpon int GPON0/8:29 onu port 1 state</b> <u>(0 сек.)</u>
+      <br>GPON0/8:29 uni-port 1 up
+      <br>10/100/1000 BASE-T(1Gbps Full-Duplex)
+      <br><hr><b>show gpon interface GPON0/8:29 onu catv-info</b> <u>(0 сек.)</u>
+      <br><hr><b>show run interface GPON0/8:29</b> <u>(0 сек.)</u>
+      <br>interface GPON0/8:29
+      <br>gpon onu uni 1 vlan-profile ONU-VLAN-254
+      <br><hr><b>show ip dhcp-relay snooping binding all | inc 0200.0000.0001</b> <u>(0 сек.)</u>
+      <br><hr><b>show gpon interface GPON0/8:29 onu basic-info</b> <u>(1 сек.)</u>
+      <br>Serial number TEST:15A2D643
+      <br>Operational state Enabled (1)
+      <br>Distance 1605.7 m
+      <br>Online Duration 0h 31m 31s
+      <br>01 2026-08-07 16:51:50 2026-08-10 12:20:10 reboot
+      <br>02 2026-08-10 12:21:01
+      <br><hr>общая длительность опроса <u>(2 сек.)</u><hr>
+    </font>
+  </td></tr></tbody></table>
+</body>
+</html>

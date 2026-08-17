@@ -1,0 +1,24 @@
+{
+  "schema": "simnet-guide-resume-fixture-v1",
+  "case": "login:abon-test",
+  "facts_collected": [
+    "billing_technical",
+    "onu_mac",
+    "onu_serial",
+    "tmc_olt"
+  ],
+  "checkpoint": {
+    "action": "fill_billing_olt",
+    "phase": "select"
+  },
+  "detour": {
+    "system": "billing",
+    "pageKind": "billing_other",
+    "purpose": "payments"
+  },
+  "expected": {
+    "sameCase": true,
+    "nextAction": "fill_billing_olt",
+    "restartFromTechnical": false
+  }
+}

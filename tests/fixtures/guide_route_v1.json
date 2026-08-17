@@ -1,0 +1,30 @@
+{
+  "billingTechnicalLink": {
+    "text": "Технические данные",
+    "hrefPattern": "a=dopdata&parent_type=0&id=<billingId>&tmpl=1"
+  },
+  "billingUsersideLink": {
+    "text": "USERSIDE",
+    "hrefPattern": "userside.simnet.kiev.ua/script/gotouser.php?ip=<subscriberIp>"
+  },
+  "technicalOltControl": {
+    "selector": "select#dopfield_29",
+    "visualControl": ".selectize-control"
+  },
+  "usersideTmcBlock": {
+    "contains": [
+      "Найдено на OLT",
+      "Huawei OLT Test",
+      "IP: 172.16.0.10",
+      "Interface: GPON 0/1/1:1"
+    ]
+  },
+  "billingPollTab": {
+    "text": "HUAWEI OLT",
+    "action": "313"
+  },
+  "billingAskOlt": {
+    "text": "Запрос OLT",
+    "act": "askolt"
+  }
+}

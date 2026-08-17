@@ -1,0 +1,33 @@
+SIMNET Workbench v1.7.19 — Operator Trace Journal acceptance checklist
+
+A. Case binding
+[ ] Open a subscriber in Billing and confirm journal actions land in that subscriber case.
+[ ] Keep a second subscriber in another tab and confirm clicks do not cross into the wrong case.
+
+B. Click / DOM
+[ ] Click «Технические данные»: journal shows CLICK, semantic meaning, GET target and DOM CSS path.
+[ ] Export case JSON: operator_click contains targetHtml + parentHtml + grandparentHtml.
+[ ] Double-click a harmless navigation control: two click records plus DOUBLE CLICK summary are visible.
+
+C. Selection
+[ ] Select text in a Billing/UserSide table: SELECT entry contains selected text, start/end/common paths and exact DOM fragment.
+
+D. Navigation
+[ ] Follow a normal link: NAVIGATE/CLICK context contains safe from/to URL.
+[ ] Use browser Back: RETURN is recorded when browser Navigation Timing/popstate reports back-forward.
+
+E. Inputs / forms
+[ ] Change a harmless select/input: CHANGE records final value and DOM context.
+[ ] Submit a harmless search/filter form: SUBMIT records method and target URL.
+[ ] Password/token/session fields never expose their value in exported JSON.
+
+F. Human context / noise
+[ ] Hover >650 ms on a meaningful link/button creates HOVER; brief pointer passes do not.
+[ ] Scroll a noticeable distance and stop: one settled SCROLL event appears, not hundreds of scroll ticks.
+[ ] Workbench rail/Guide/Data Audit clicks are not recorded as operator CRM actions.
+
+G. Existing behavior
+[ ] Guide/Locator/Poll route remains unchanged from v1.7.18.
+[ ] Existing Guard Rails still pass manual smoke test.
+
+Automated regression: 143 total / 141 PASS / 2 SKIP / 0 FAIL.
