@@ -52,6 +52,8 @@
         "src/core/semantic-tree.js",
         "src/graph/graph-loader.js",
         "src/graph/graph-studio.js",
+        "src/graph/conversation/conversation-content.js",
+        "src/graph/conversation/conversation-runtime.js",
         "src/ui/rail.js",
         "src/audit/launcher.js",
         "src/content/bootstrap.js"
