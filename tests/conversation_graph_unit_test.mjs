@@ -101,6 +101,8 @@ assert.ok(!runtimeSource.includes('MutationObserver'), 'conversation runtime mus
 assert.ok(!runtimeSource.includes('chrome.storage.local.set'), 'answer clicks must not spam UI storage directly');
 assert.ok(!runtimeSource.includes("document.createElement('div')"), 'runtime must reuse the existing Graph Studio host');
 assert.ok(!runtimeSource.includes('TMC_') && !runtimeSource.includes('poll_current_binding'), 'conversation runtime must not own PON/TMC routing');
+assert.ok(!runtimeSource.includes('state.shadow.insertAdjacentHTML'), 'ShadowRoot style injection must use supported DOM APIs');
+assert.ok(runtimeSource.includes("document.createElement('template')") && runtimeSource.includes('state.shadow.appendChild'), 'conversation styles must mount through a DOM node into ShadowRoot');
 assert.ok(!bridgeSource.includes('setInterval') && !bridgeSource.includes('MutationObserver'), 'mode bridge stays event-driven');
 
 console.log('conversation_graph_unit_test: PASS');
