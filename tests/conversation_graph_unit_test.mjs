@@ -17,43 +17,30 @@ sandbox.globalThis = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(contentSource, sandbox, { filename: 'conversation-content.js' });
 
-assert.ok(WB.conversationGraphContent, 'conversation presentation API must load');
-const scope = WB.conversationGraphContent.presentNode({
-  id: 'low.scope',
-  kind: 'question',
-  title: 'old technical title',
-  why: 'old why'
-}, 'low_speed');
-assert.equal(scope.title, 'На одном устройстве или на всех?');
-assert.match(scope.ask, /одном устройстве|на всех/i);
+assert.ok(WB.conversationGraphContent, 'operator guide content API must load');
+assert.equal(WB.conversationGraphContent.revision, 'operator-guide-tabs-v2');
 
-const wifi = WB.conversationGraphContent.presentNode({
-  id: 'low.wifi.band',
-  kind: 'question',
-  title: 'old'
-}, 'low_speed');
-assert.match(wifi.ask, /5G/i);
+const topics = WB.conversationGraphContent.topics();
+assert.deepEqual(
+  topics.map(item => item.id),
+  ['low_speed', 'no_internet', 'unstable', 'other'],
+  'approved top-level complaint tabs must stay stable'
+);
 
-const advanced = WB.conversationGraphContent.presentNode({
-  id: 'low.direct',
-  kind: 'question',
-  title: 'old'
-}, 'low_speed');
-assert.equal(advanced.level, 'advanced');
+const slow = WB.conversationGraphContent.topic('low_speed');
+assert.equal(slow.label, 'Медленная скорость');
+assert.match(slow.complaint, /Медленная/);
+assert.ok(slow.variants.some(item => /медленно|тупит/i.test(item)), 'slow-speed tab contains subscriber wording variants');
+assert.ok(slow.questions.some(item => /устройств/i.test(item)), 'slow-speed tab contains scope question');
+assert.ok(slow.meaning.length >= 3, 'slow-speed tab explains why questions matter');
 
-const rare = WB.conversationGraphContent.presentOption('low.medium.all', {
-  id: 'both',
-  label: 'both',
-  next: 'low.direct'
-}, 'low_speed');
-assert.equal(rare.tier, 'rare', 'deep control tests stay secondary/rare in the presentation');
+const none = WB.conversationGraphContent.topic('no_internet');
+assert.equal(none.label, 'Нет интернета');
+assert.ok(none.variants.some(item => /ничего не открывается/i.test(item)), 'no-internet tab has its own complaint cloud wording');
+assert.ok(none.questions.some(item => /Wi‑Fi|Wi-Fi/i.test(item)), 'no-internet tab has its own question set');
+assert.notDeepEqual(none.questions, slow.questions, 'switching tab must materially change the scenario');
 
-const helpers = WB.conversationGraphContent.helperCards({ id: 'low.wifi.band', kind: 'question' }, 'low_speed');
-assert.ok(helpers.some(item => item.id === 'ask-simple'));
-assert.ok(helpers.some(item => item.id === 'wifi-bands'));
-assert.ok(helpers.some(item => item.id === 'smart-connect'));
-assert.ok(helpers.some(item => item.id === 'router'));
-assert.ok(helpers.length <= 5, 'helper remains compact');
+assert.equal(WB.conversationGraphContent.normalizeTopicId('missing'), 'low_speed');
 
 const scripts = manifest.content_scripts[0].js;
 const studioIndex = scripts.indexOf('src/graph/graph-studio.js');
@@ -67,27 +54,35 @@ assert.ok(
   && contentIndex < runtimeIndex
   && runtimeIndex < bridgeIndex
   && bridgeIndex < railIndex,
-  'conversation presentation wraps the existing Graph API before Rail without replacing the loader/editor'
+  'operator guide wraps the existing Graph host before Rail without replacing the loader/editor'
 );
 
 for (const token of [
   "const HOST_ID = 'simnet-graph-studio-host'",
   'const baseGraphStudio = WB.graphStudio',
-  'return baseGraphStudio.open(options)',
   "await baseGraphStudio.open({ mode: 'runtime' })",
   'WB.graphStudio = publicApi',
+  'data-guide-action="topic"',
+  'guide-tabs',
+  'guide-cloud',
+  'guide-core',
+  'Что спросить',
+  'Что это нам даёт',
+  'Пособие оператора',
+  'Это не диагностический граф',
+  'removeEventListener',
+  "document.createElement('template')",
+  'state.shadow.appendChild'
+]) assert.ok(runtimeSource.includes(token), `missing operator-guide contract token: ${token}`);
+
+for (const forbidden of [
   'WB.store.patchAppeal',
   'WB.appeals?.answer',
-  'ResizeObserver',
-  'disconnect',
-  'removeEventListener',
-  'cancelAnimationFrame',
-  'conv-helper',
-  'conv-edges',
+  'data-conv-action="answer"',
   'data-conv-action="rewind"',
-  'Смысловая карта',
-  'Помощник оператора'
-]) assert.ok(runtimeSource.includes(token), `missing runtime contract token: ${token}`);
+  'Шаг ',
+  'Следующий шаг'
+]) assert.ok(!runtimeSource.includes(forbidden), `operator guide must not lead diagnostics: ${forbidden}`);
 
 for (const token of [
   "const HOST_ID = 'simnet-graph-studio-host'",
@@ -96,13 +91,10 @@ for (const token of [
   "panel.addEventListener('click', onPanelClick, true)"
 ]) assert.ok(bridgeSource.includes(token), `missing mode bridge contract token: ${token}`);
 
-assert.ok(!runtimeSource.includes('setInterval'), 'conversation runtime must not poll');
-assert.ok(!runtimeSource.includes('MutationObserver'), 'conversation runtime must not observe the CRM DOM');
-assert.ok(!runtimeSource.includes('chrome.storage.local.set'), 'answer clicks must not spam UI storage directly');
+assert.ok(!runtimeSource.includes('setInterval'), 'operator guide must not poll');
+assert.ok(!runtimeSource.includes('MutationObserver'), 'operator guide must not observe CRM DOM');
+assert.ok(!runtimeSource.includes('chrome.storage.local.set'), 'tab clicks are UI-only and must not spam storage');
 assert.ok(!runtimeSource.includes("document.createElement('div')"), 'runtime must reuse the existing Graph Studio host');
-assert.ok(!runtimeSource.includes('TMC_') && !runtimeSource.includes('poll_current_binding'), 'conversation runtime must not own PON/TMC routing');
-assert.ok(!runtimeSource.includes('state.shadow.insertAdjacentHTML'), 'ShadowRoot style injection must use supported DOM APIs');
-assert.ok(runtimeSource.includes("document.createElement('template')") && runtimeSource.includes('state.shadow.appendChild'), 'conversation styles must mount through a DOM node into ShadowRoot');
-assert.ok(!bridgeSource.includes('setInterval') && !bridgeSource.includes('MutationObserver'), 'mode bridge stays event-driven');
+assert.ok(!runtimeSource.includes('TMC_') && !runtimeSource.includes('poll_current_binding'), 'operator guide must not own PON/TMC routing');
 
 console.log('conversation_graph_unit_test: PASS');
