@@ -74,6 +74,8 @@
 
   function styles() {
     return `<style id="${STYLE_ID}">
+      .module.operator-guide-runtime.open{display:block!important;grid-template-rows:none!important}
+      .module.operator-guide-runtime>.guide-root{width:100%;height:100%;min-width:0;min-height:0}
       .guide-root{height:100%;min-height:0;display:grid;grid-template-rows:74px 1fr;background:#F7F7F9;color:#1D2939;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
       .guide-root *{box-sizing:border-box}
       .guide-topbar{display:flex;align-items:center;gap:14px;padding:0 22px;background:#fff;border-bottom:1px solid #E4E7EC}
@@ -153,6 +155,7 @@
     if (!topic) return;
     state.renderCount += 1;
 
+    state.panel.classList.add('operator-guide-runtime');
     state.panel.innerHTML = `<div class="guide-root">
       ${renderTopbar(caseData)}
       <div class="guide-shell">
@@ -210,7 +213,7 @@
     state.unsubscribeStore = null;
     if (state.panel && state.clickHandler) state.panel.removeEventListener('click', state.clickHandler, true);
     state.clickHandler = null;
-    state.panel?.classList.remove('guide-expanded');
+    state.panel?.classList.remove('guide-expanded', 'operator-guide-runtime');
   }
 
   async function open(options = {}) {
@@ -253,7 +256,7 @@
 
   WB.graphStudio = publicApi;
   WB.conversationGraphRuntime = Object.freeze({
-    revision: 'operator-guide-tabs-v2',
+    revision: 'operator-guide-tabs-v3-layout',
     render: () => { if (state.active) render(); },
     isActive: () => state.active,
     activeTopic: () => state.activeTypeId,
