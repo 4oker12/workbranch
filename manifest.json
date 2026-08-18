@@ -58,6 +58,7 @@
         "src/graph/conversation/conversation-scenario-work-apps.js",
         "src/graph/conversation/conversation-runtime.js",
         "src/graph/conversation/conversation-visual-refresh.js",
+        "src/graph/conversation/conversation-visual-compact.js",
         "src/graph/conversation/conversation-mode-bridge.js",
         "src/ui/rail.js",
         "src/audit/launcher.js",
