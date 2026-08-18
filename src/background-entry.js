@@ -228,7 +228,11 @@ async function openBillingSemanticTarget(payload = {}) {
   const expectedPageKind = BILLING_ROUTES[semanticTargetId]?.pageKind || '';
   const tabs = await chrome.tabs.query({ url: BILLING_TAB_PATTERNS });
 
-  const exact = tabs.find(tab => isExactBillingTarget(tab.url, semanticTargetId, resolved.billingId));
+  const preferredOrigin = preferredBillingOrigin(resolved.caseData);
+  const exact = tabs.find(tab => (
+    billingOriginFromUrl(tab.url) === preferredOrigin
+    && isExactBillingTarget(tab.url, semanticTargetId, resolved.billingId)
+  ));
   if (exact) {
     await focusTab(exact);
     return {
@@ -241,13 +245,10 @@ async function openBillingSemanticTarget(payload = {}) {
     };
   }
 
-  const preferredOrigin = preferredBillingOrigin(resolved.caseData);
   const authenticatedTabs = tabs
     .map(tab => ({ tab, session: billingSessionFromUrl(tab.url) }))
     .filter(item => item.session);
-  const sessionSource = authenticatedTabs.find(item => item.session.origin === preferredOrigin)
-    || authenticatedTabs[0]
-    || null;
+  const sessionSource = authenticatedTabs.find(item => item.session.origin === preferredOrigin) || null;
 
   if (sessionSource) {
     const targetUrl = buildBillingTarget(semanticTargetId, resolved.billingId, sessionSource.session);
@@ -275,7 +276,7 @@ async function openBillingSemanticTarget(payload = {}) {
 
   const authenticatedUrl = await waitForBillingSession(bootstrap.id);
   const session = billingSessionFromUrl(authenticatedUrl);
-  if (!session) {
+  if (!session || session.origin !== preferredOrigin) {
     return {
       ok: false,
       reason: 'billing-session-not-established',
