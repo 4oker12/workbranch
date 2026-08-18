@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/operator-guide-local-search
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
