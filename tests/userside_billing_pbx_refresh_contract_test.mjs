@@ -62,7 +62,7 @@ for (const token of [
   'SIMNET_WB_PBX_REFRESH_NOW',
   "cache: 'no-store'",
   "credentials: 'include'",
-  'chrome.runtime.onMessage.addListener',
+  'onMessage?.addListener?.',
   'publish({ force: true, fresh: true })'
 ]) assert.ok(pbxObserver.includes(token), `missing explicit PBX refresh contract: ${token}`);
 
