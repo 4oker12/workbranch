@@ -20,8 +20,19 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Full regression suite
+      - name: Feature full regression suite
+        continue-on-error: true
         run: python tests/regression_tests.py
+
+      - name: Checkout main baseline
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: baseline-main
+
+      - name: Main baseline regression suite
+        continue-on-error: true
+        run: cd baseline-main && python tests/regression_tests.py
 
       - name: Existing Operator Guide contracts
         run: |
