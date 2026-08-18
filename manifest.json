@@ -55,6 +55,7 @@
         "src/graph/graph-loader.js",
         "src/graph/graph-studio.js",
         "src/graph/conversation/conversation-content.js",
+        "src/graph/conversation/conversation-scenario-work-apps.js",
         "src/graph/conversation/conversation-runtime.js",
         "src/graph/conversation/conversation-mode-bridge.js",
         "src/ui/rail.js",
