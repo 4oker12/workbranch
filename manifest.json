@@ -13,7 +13,7 @@
     "https://pbx.simnet.kiev.ua/*"
   ],
   "background": {
-    "service_worker": "src/background.js",
+    "service_worker": "src/background-entry.js",
     "type": "module"
   },
   "content_scripts": [
@@ -43,12 +43,14 @@
         "src/core/juniper-prefetch.js",
         "src/core/operator-trace.js",
         "src/core/handoff.js",
+        "src/core/billing-navigation-fallback.js",
         "src/core/locator-observer.js",
         "src/ui/knowledge-base.js",
         "src/ui/poll-terminal.js",
         "src/ui/guide.js",
         "src/ui/appeals-navigator.js",
         "src/ui/call-registration.js",
+        "src/ui/call-registration-refresh-bridge.js",
         "src/core/semantic-tree.js",
         "src/graph/graph-loader.js",
         "src/graph/graph-studio.js",
