@@ -7,8 +7,8 @@
 
   WB.__operatorGuideSoftMatchLoaded = true;
 
-  const GENERIC_QUALITY_RE = /(?:\bплох\w*\b|\bникак\w*\b|\bеле\b|\bслаб\w*\b|\bужас\w*\b|\bкошмар\w*\b|\bтуп\w*\b|\bглюч\w*\b)/iu;
-  const INTERNET_RE = /\b(?:интернет|инет)\b/iu;
+  const GENERIC_QUALITY_RE = /(?:плох|никак|еле|слаб|ужас|кошмар|туп|глюч)/iu;
+  const INTERNET_RE = /(?:интернет|инет)/iu;
   const EXPLICIT_OUTAGE_RE = /(?:нет\s+интернет|без\s+интернет|не\s+работает|ничего\s+не\s+открыва|пропада|отвалива|обрыв|рвет|рвёт)/iu;
   const SOFT_SCORE = 0.46;
   const NORMAL_MATCH_FLOOR = 0.34;
