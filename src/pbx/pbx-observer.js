@@ -5,6 +5,7 @@
   if (location.hostname !== 'pbx.simnet.kiev.ua') return;
 
   const MESSAGE = 'PBX_RECENT_CALLS_OBSERVED';
+  const REFRESH_MESSAGE = 'SIMNET_WB_PBX_REFRESH_NOW';
   const SCHEMA = 'simnet-pbx-recent-calls-v1';
   const MAX_CALLS_PER_SNAPSHOT = 80;
   let lastSignature = '';
@@ -16,7 +17,6 @@
       .trim();
     return text.length > max ? `${text.slice(0, max)}…` : text;
   };
-
 
   async function reportDiagnostic(entry = {}) {
     try {
@@ -152,10 +152,8 @@
       .slice(0, MAX_CALLS_PER_SNAPSHOT);
   }
 
-  async function publish() {
-    const calls = parsePbxRecentCalls(document);
-    if (!calls.length) return;
-    const signature = calls.map(call => [
+  function callSignature(calls) {
+    return calls.map(call => [
       call.callKey,
       call.providerCode,
       call.contract,
@@ -163,8 +161,58 @@
       call.agent,
       call.duration
     ].join(':')).join('|');
-    if (signature === lastSignature) return;
-    lastSignature = signature;
+  }
+
+  async function fetchFreshRoot() {
+    if (typeof fetch !== 'function' || typeof DOMParser === 'undefined') return null;
+    const response = await fetch(location.href, {
+      method: 'GET',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'follow',
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+    if (!response.ok) throw new Error(`PBX refresh returned HTTP ${response.status}`);
+    const html = await response.text();
+    const root = new DOMParser().parseFromString(html, 'text/html');
+    return root?.documentElement ? root : null;
+  }
+
+  async function publish({ force = false, fresh = false } = {}) {
+    let source = 'current-dom';
+    let calls = [];
+
+    if (fresh) {
+      try {
+        const fetched = await fetchFreshRoot();
+        if (fetched) {
+          calls = parsePbxRecentCalls(fetched);
+          source = calls.length ? 'fresh-fetch' : 'current-dom-fallback';
+        }
+      } catch (error) {
+        source = 'current-dom-fallback';
+        void reportDiagnostic({
+          severity: 'WARN',
+          code: 'PBX_FRESH_LIST_FETCH_FAILED',
+          stage: 'REFRESH',
+          message: error?.message || String(error)
+        });
+      }
+    }
+
+    if (!calls.length) calls = parsePbxRecentCalls(document);
+    if (!calls.length) {
+      return { ok: true, refreshed: false, published: false, callCount: 0, source };
+    }
+
+    const signature = callSignature(calls);
+    if (!force && signature === lastSignature) {
+      return { ok: true, refreshed: fresh, published: false, callCount: calls.length, source };
+    }
+
     try {
       const response = await chrome.runtime.sendMessage({
         type: MESSAGE,
@@ -176,6 +224,8 @@
         }
       });
       if (!response?.success) throw new Error(response?.error || 'PBX snapshot rejected by Service Worker');
+      lastSignature = signature;
+      return { ok: true, refreshed: fresh, published: true, callCount: calls.length, source };
     } catch (error) {
       if (!/context invalidated|receiving end does not exist/i.test(String(error?.message || error))) {
         console.warn('[SIMNET Workbench][PBX] snapshot rejected', error);
@@ -187,6 +237,7 @@
           details: { callCount: calls.length }
         });
       }
+      return { ok: false, refreshed: fresh, published: false, callCount: calls.length, source, reason: 'publish-failed' };
     }
   }
 
@@ -195,13 +246,23 @@
     publishTimer = window.setTimeout(() => void publish(), 120);
   }
 
-  const observer = new MutationObserver(schedulePublish);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (String(message?.type || '') !== REFRESH_MESSAGE) return false;
+    // Explicit operator action replaces permanent DOM observation: get a fresh
+    // PBX page snapshot right before the call picker queries its cached calls.
+    void publish({ force: true, fresh: true })
+      .then(result => sendResponse(result))
+      .catch(error => sendResponse({ ok: false, refreshed: false, reason: error?.message || String(error) }));
+    return true;
+  });
+
   window.addEventListener('pagehide', () => {
     clearTimeout(publishTimer);
-    observer.disconnect();
   }, { once: true });
   window.addEventListener('pageshow', schedulePublish);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) schedulePublish();
+  });
 
   window.addEventListener('error', event => {
     void reportDiagnostic({
@@ -225,7 +286,8 @@
   globalThis.__SIMNET_WB_PBX_TEST_API__ = Object.freeze({
     recordIdOf,
     durationSeconds,
-    parsePbxRecentCalls
+    parsePbxRecentCalls,
+    publish
   });
 
   schedulePublish();
