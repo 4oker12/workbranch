@@ -1,0 +1,55 @@
+name: Operator Guide Search Branch Check
+
+on:
+  push:
+    branches:
+      - agent/operator-guide-local-search
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Full regression suite
+        run: python tests/regression_tests.py
+
+      - name: Existing Operator Guide contracts
+        run: |
+          node tests/conversation_graph_unit_test.mjs
+          node tests/operator_guide_work_apps_scenario_test.mjs
+          node tests/operator_guide_visual_refresh_contract_test.mjs
+          node tests/operator_guide_compact_visual_contract_test.mjs
+
+      - name: Operator Guide search tests
+        run: |
+          node tests/operator_guide_search_unit_test.mjs
+          node tests/operator_guide_search_lifecycle_test.mjs
+
+      - name: Production syntax check
+        run: |
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find src -type f -name '*.js' -print0)
+
+      - name: Search hard performance/privacy bans
+        shell: bash
+        run: |
+          files=(
+            src/graph/conversation/conversation-search-data.js
+            src/graph/conversation/conversation-search-engine.js
+            src/graph/conversation/conversation-search-controller.js
+          )
+          forbidden=('MutationObserver' 'ResizeObserver' 'setInterval' 'requestAnimationFrame' 'getBoundingClientRect' 'fetch(' 'chrome.storage' 'runtime.sendMessage' 'WB.bus.emit' 'WB.log.')
+          for token in "${forbidden[@]}"; do
+            if grep -F "$token" "${files[@]}"; then
+              echo "Forbidden Search token found: $token" >&2
+              exit 1
+            fi
+          done
