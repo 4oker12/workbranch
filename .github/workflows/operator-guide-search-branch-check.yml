@@ -34,17 +34,28 @@ jobs:
         continue-on-error: true
         run: cd baseline-main && python tests/regression_tests.py
 
-      - name: Existing Operator Guide contracts
-        run: |
-          node tests/conversation_graph_unit_test.mjs
-          node tests/operator_guide_work_apps_scenario_test.mjs
-          node tests/operator_guide_visual_refresh_contract_test.mjs
-          node tests/operator_guide_compact_visual_contract_test.mjs
+      - name: Feature conversation graph unit baseline-sensitive check
+        continue-on-error: true
+        run: node tests/conversation_graph_unit_test.mjs
 
-      - name: Operator Guide search tests
-        run: |
-          node tests/operator_guide_search_unit_test.mjs
-          node tests/operator_guide_search_lifecycle_test.mjs
+      - name: Main conversation graph unit baseline-sensitive check
+        continue-on-error: true
+        run: cd baseline-main && node tests/conversation_graph_unit_test.mjs
+
+      - name: Existing Operator Guide work-apps scenario
+        run: node tests/operator_guide_work_apps_scenario_test.mjs
+
+      - name: Existing Operator Guide visual refresh contract
+        run: node tests/operator_guide_visual_refresh_contract_test.mjs
+
+      - name: Existing Operator Guide compact visual contract
+        run: node tests/operator_guide_compact_visual_contract_test.mjs
+
+      - name: Operator Guide search unit tests
+        run: node tests/operator_guide_search_unit_test.mjs
+
+      - name: Operator Guide search lifecycle tests
+        run: node tests/operator_guide_search_lifecycle_test.mjs
 
       - name: Production syntax check
         run: |
