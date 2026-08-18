@@ -205,7 +205,7 @@
 
     if (!calls.length) calls = parsePbxRecentCalls(document);
     if (!calls.length) {
-      return { ok: true, refreshed: false, published: false, callCount: 0, source };
+      return { ok: false, refreshed: false, published: false, callCount: 0, source, reason: 'pbx-call-table-not-found' };
     }
 
     const signature = callSignature(calls);
@@ -246,7 +246,7 @@
     publishTimer = window.setTimeout(() => void publish(), 120);
   }
 
-  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  chrome.runtime.onMessage?.addListener?.((message, _sender, sendResponse) => {
     if (String(message?.type || '') !== REFRESH_MESSAGE) return false;
     // Explicit operator action replaces permanent DOM observation: get a fresh
     // PBX page snapshot right before the call picker queries its cached calls.
@@ -260,7 +260,7 @@
     clearTimeout(publishTimer);
   }, { once: true });
   window.addEventListener('pageshow', schedulePublish);
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener?.('visibilitychange', () => {
     if (!document.hidden) schedulePublish();
   });
 
